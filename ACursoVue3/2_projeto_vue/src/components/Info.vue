@@ -10,6 +10,9 @@
       <li>PostgreSQL</li>
     </ul>
     <p v-if="4 > 2">Testando</p>
+    <div>
+      <button @click="mostrarEmail">{{ textoBotao }}</button>
+    </div>
     <p v-show="mostrar_email">Mande uma mensagem para: {{ email }}</p>
     <p>Para acessar meu portfólio <a v-bind:href="meu_link" target="_blank">basta clicar aqui</a></p>
     <Imagem />
@@ -28,7 +31,18 @@ export default {
       esta_trabalhando: false,
       mostrar_email: false,
       email:'williany.veras@gmai.com',
-      meu_link:'https://www.google.com/'
+      meu_link:'https://www.google.com/',
+      textoBotao: 'Mostrar e-mail'
+    }
+  },
+  methods: {
+    mostrarEmail() {
+      this.mostrar_email = !this.mostrar_email
+      if (!this.mostrar_email) {
+        this.textoBotao = 'Mostrar e-mail'
+      } else {
+        this.textoBotao = 'Esconder e-mail'
+      }
     }
   }
 };
