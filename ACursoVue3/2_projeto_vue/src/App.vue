@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header />
+    <Header :esta_logado="true"/>
     <PrimeiroComponente />
     <p class="paragrafo-pai">O dado de App Vue é: {{ testando }}</p>
     <life-cycle></life-cycle> <!-- Também o componente pode ser chamado dessa forma, mas usada <PrimeiroComponente /> -->
