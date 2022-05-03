@@ -37,11 +37,13 @@ export default {
   components: {
     Imagem,
   },
+  props: {
+    email: String,
+    esta_trabalhando: Boolean
+  },
   data() {
     return {
-      esta_trabalhando: false,
       mostrar_email: false,
-      email:'williany.veras@gmai.com',
       meu_link:'https://www.google.com/',
       textoBotao: 'Mostrar e-mail',
       back_end_tecnologias:['JavaScript','PHP','Laravel'],
