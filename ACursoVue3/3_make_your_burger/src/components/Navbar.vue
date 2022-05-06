@@ -16,7 +16,7 @@ export default {
 <style scoped>
   #nav {
     background-color: #222;
-    border-bottom: 4px solid #111;
+    /* border-bottom: 4px solid #111; */
     padding: 15px 50px;
     display: flex;
     justify-content: flex-end;
@@ -41,6 +41,6 @@ export default {
   }
 
   #nav a:hover {
-    color: #FFF;
+    color: #DFDBDB;
   }
 </style>
