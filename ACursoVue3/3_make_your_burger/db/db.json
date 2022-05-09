@@ -79,27 +79,6 @@
   ],
   "burgers": [
     {
-      "nome": "Williany",
-      "carne": "Maminha",
-      "pao": "3 Queijos",
-      "optionais": [
-        "Bacon",
-        "Cheddar"
-      ],
-      "status": "Solicitado",
-      "id": 1
-    },
-    {
-      "nome": "Williany",
-      "carne": "Alcatra",
-      "pao": "Italiano Branco",
-      "optionais": [
-        "Bacon"
-      ],
-      "status": "Solicitado",
-      "id": 2
-    },
-    {
       "nome": "Tad Rosales",
       "carne": "Picanha",
       "pao": "Parmesão e Orégano",
@@ -107,19 +86,8 @@
         "Pepino",
         "Salame"
       ],
-      "status": "Solicitado",
+      "status": "Finalizado",
       "id": 3
-    },
-    {
-      "nome": "Thalita",
-      "carne": "Maminha",
-      "pao": "3 Queijos",
-      "optionais": [
-        "Bacon",
-        "Salame"
-      ],
-      "status": "Solicitado",
-      "id": 4
     },
     {
       "nome": "August Cherry",
@@ -132,8 +100,19 @@
         "Cebola roxa",
         "Pepino"
       ],
-      "status": "Solicitado",
+      "status": "Finalizado",
       "id": 5
+    },
+    {
+      "nome": "GLAUCIANO SERAFIM DA SILVA",
+      "carne": "Alcatra",
+      "pao": "Parmesão e Orégano",
+      "optionais": [
+        "Bacon",
+        "Cheddar"
+      ],
+      "status": "Finalizado",
+      "id": 6
     }
   ]
 }
