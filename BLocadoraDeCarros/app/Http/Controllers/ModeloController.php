@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreMarcaRequest;
-use App\Models\Marca;
+use App\Models\Modelo;
 use App\Models\Util;
 use Illuminate\Http\Request;
-use Ramsey\Uuid\Type\Integer;
 use Illuminate\Support\Facades\Storage;
 
-class MarcaController extends Controller
+class ModeloController extends Controller
 {
-    public function __construct(Marca $marca, Util $util)
+    // injeção do model
+    public function __construct(Modelo $modelo, Util $util)
     {
-        $this->marca    = $marca;
+        $this->modelo   = $modelo;
         $this->util     = $util;
-        $this->pathName = "marcas";
+        $this->pathName = "modelos";
     }
 
     /**
@@ -25,25 +24,25 @@ class MarcaController extends Controller
      */
     public function index()
     {
-        $marcas = $this->marca->all();
-        return response()->json($marcas, 200);
+        $modelos = $this->modelo->all();
+        return response()->json($modelos, 200);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreMarcaRequest  $request
+     * @param  Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreMarcaRequest $request)
+    public function store(Request $request)
     {
         $data = $request->all();
         // Gravar a foto e pegando o caminho onde ela foi salva.
-        if ($request->file('image')) {
-            $data['image'] = $this->util->saveImage($request->file('image'), $request->nome,$this->pathName);
+        if ($request->file('imagem')) {
+            $data['imagem'] = $this->util->saveImage($request->file('imagem'), $request->nome,$this->pathName);
         }
-        $marca = $this->marca->create($data);
-        return response()->json($marca, 201);
+        $modelo = $this->modelo->create($data);
+        return response()->json($modelo, 201);
     }
 
     /**
@@ -54,11 +53,11 @@ class MarcaController extends Controller
      */
     public function show(int $id)
     {
-        $marca = $this->marca->find($id);
-        if ($marca === null) {
+        $modelo = $this->modelo->find($id);
+        if ($modelo === null) {
             return response()->json(['erro' => 'Recurso pesquisado não existe.'], 404);
         }
-        return response()->json($marca, 200);
+        return response()->json($modelo, 200);
     }
 
     /**
@@ -70,8 +69,8 @@ class MarcaController extends Controller
      */
     public function update(Request $request, int $id)
     {
-        $marca = $this->marca->find($id);
-        if ($marca === null) {
+        $modelo = $this->modelo->find($id);
+        if ($modelo === null) {
             return response()->json(['erro' => 'Impossível realizar a atualização. O recurso solicitado não existe.'], 404);
         }
 
@@ -81,36 +80,36 @@ class MarcaController extends Controller
              * quando quero atualizar todos os dados é PUT
              */
             $regrasDinamicas = array();
-            foreach ($marca->rules() as $input => $regra) {
+            foreach ($modelo->rules() as $input => $regra) {
                 if (array_key_exists($input, $request->all())) {
                     $regrasDinamicas[$input] = $regra;
                 }
             }
             // Validando os dados através do modelo
-            $request->validate($regrasDinamicas, $marca->feedback());
+            $request->validate($regrasDinamicas, $modelo->feedback());
         }else{
             // Validando os dados através do modelo
-            $request->validate($marca->rules(), $marca->feedback());
+            $request->validate($modelo->rules(), $modelo->feedback());
         }
 
-        // preencher o objeto $marca com os dados enviados
+        // preencher o objeto $modelo com os dados enviados
         // se tiver algum que não foi ele não atualiza
-        $marca->fill($request->all());
+        $modelo->fill($request->all());
 
         //remove o arquivo antigo, caso um novo tenha sido enviado no request
-        if ($request->file('image')) {
+        if ($request->file('imagem')) {
             //verificando se existia imagem anterior
-            if ($marca->image) {
-                Storage::disk('public')->delete($marca->image); //remove a imagem anterior
+            if ($modelo->imagem) {
+                Storage::disk('public')->delete($modelo->imagem); //remove a imagem anterior
             }
             //salva nova imagem
-            $marca->image = $this->util->saveImage($request->file('image'), $request->marca,$this->pathName);
+            $modelo->imagem = $this->util->saveImage($request->file('imagem'), $request->modelo,$this->pathName);
         }
 
         //atualiza se tiver ID, se não tiver cria um novo
-        $marca->save();
+        $modelo->save();
 
-        return response()->json($marca, 200);
+        return response()->json($modelo, 200);
     }
 
     /**
@@ -121,15 +120,15 @@ class MarcaController extends Controller
      */
     public function destroy(int $id)
     {
-        $marca = $this->marca->find($id);
-        if ($marca === null) {
+        $modelo = $this->modelo->find($id);
+        if ($modelo === null) {
             return response()->json(['erro' => 'Impossível realizar a exclusão. Recurso pesquisado não existe.'], 404);
         }
         //verificando se existia imagem anterior
-        if ($marca->image) {
-            Storage::disk('public')->delete($marca->image); //remove a imagem anterior
+        if ($modelo->imagem) {
+            Storage::disk('public')->delete($modelo->imagem); //remove a imagem anterior
         }
-        $marca->delete();
-        return response()->json(['msg' => 'A marca foi removida com sucesso!'], 200);
+        $modelo->delete();
+        return response()->json(['msg' => 'O modelo foi removido com sucesso!'], 200);
     }
 }

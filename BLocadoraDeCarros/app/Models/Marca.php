@@ -11,14 +11,6 @@ class Marca extends Model
 
     protected $fillable = ['nome','image'];
 
-    public static function saveImage($image, $description)
-    {
-        $folder = str_replace([' ', '-','\\','/',':','*','?','"','<','>','|','+','.',',',
-        '@','#','$','&','=',';'], '_', mb_strtoupper($description, 'UTF-8'));
-        $path   = "images/marcas/$folder";
-        return $image->store($path, 'public');
-    }
-
     public function rules()
     {
         return [
@@ -36,6 +28,12 @@ class Marca extends Model
             'image.max'  => 'A image pode ter no máximo 100 caracteres',
             'image.mimes'=> 'A image só pode ser do tipo pnj.',
         ];
+    }
+
+    public function modelos()
+    {
+        //UMA marca POSSUI MUITOS modelos
+        return $this->hasMany(Modelo::class);
     }
 
 }
