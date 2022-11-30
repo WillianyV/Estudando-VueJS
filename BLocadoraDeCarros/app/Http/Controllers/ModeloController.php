@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreModeloRequest;
 use App\Models\Modelo;
-use App\Models\Util;
-use App\Repositories\MarcaRepository;
 use App\Repositories\ModeloRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -12,10 +11,9 @@ use Illuminate\Support\Facades\Storage;
 class ModeloController extends Controller
 {
     // injeção do model
-    public function __construct(Modelo $modelo, Util $util)
+    public function __construct(Modelo $modelo)
     {
         $this->modelo   = $modelo;
-        $this->util     = $util;
         $this->pathName = "modelos";
     }
 
@@ -51,10 +49,10 @@ class ModeloController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  Illuminate\Http\Request $request
+     * @param  \App\Http\Requests\StoreModeloRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreModeloRequest $request)
     {
         $data = $request->all();
         // Gravar a foto e pegando o caminho onde ela foi salva.

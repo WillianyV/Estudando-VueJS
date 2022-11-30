@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMarcaRequest;
 use App\Models\Marca;
-use App\Models\Util;
 use App\Repositories\MarcaRepository;
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Type\Integer;
@@ -12,10 +11,9 @@ use Illuminate\Support\Facades\Storage;
 
 class MarcaController extends Controller
 {
-    public function __construct(Marca $marca, Util $util)
+    public function __construct(Marca $marca)
     {
         $this->marca    = $marca;
-        $this->util     = $util;
         $this->pathName = "marcas";
     }
 
