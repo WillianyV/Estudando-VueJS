@@ -4,17 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMarcaRequest;
 use App\Models\Marca;
-use App\Models\Util;
+use App\Repositories\MarcaRepository;
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Type\Integer;
 use Illuminate\Support\Facades\Storage;
 
 class MarcaController extends Controller
 {
-    public function __construct(Marca $marca, Util $util)
+    public function __construct(Marca $marca)
     {
         $this->marca    = $marca;
-        $this->util     = $util;
         $this->pathName = "marcas";
     }
 
@@ -23,9 +22,27 @@ class MarcaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $marcas = $this->marca->all();
+        $marcaRepositorio = new MarcaRepository($this->marca);
+
+        if($request->has('atributos_modelos')){
+            $atributos_modelos = "modelos:id,marca_id,$request->atributos_modelos";
+            $marcaRepositorio->selectAtributosRegistrosRelacionados($atributos_modelos);
+        }else{
+            $marcaRepositorio->selectAtributosRegistrosRelacionados('modelos');
+        }
+
+        if($request->has('pesquisa')){
+            $marcaRepositorio->pesquisa($request->pesquisa);
+        }
+
+        if($request->has('atributos')){
+            $marcaRepositorio->selectAtributos($request->atributos);
+        }
+
+        $marcas = $marcaRepositorio->getResultadoPaginado(4);
+
         return response()->json($marcas, 200);
     }
 
@@ -40,7 +57,8 @@ class MarcaController extends Controller
         $data = $request->all();
         // Gravar a foto e pegando o caminho onde ela foi salva.
         if ($request->file('image')) {
-            $data['image'] = $this->util->saveImage($request->file('image'), $request->nome,$this->pathName);
+            $marcaRepositorio = new MarcaRepository($this->modelo);
+            $data['image'] = $marcaRepositorio->saveImage($request->file('image'), $request->nome,$this->pathName);
         }
         $marca = $this->marca->create($data);
         return response()->json($marca, 201);
@@ -104,7 +122,8 @@ class MarcaController extends Controller
                 Storage::disk('public')->delete($marca->image); //remove a imagem anterior
             }
             //salva nova imagem
-            $marca->image = $this->util->saveImage($request->file('image'), $request->marca,$this->pathName);
+            $marcaRepositorio = new MarcaRepository($this->marca);
+            $marca->image = $marcaRepositorio->saveImage($request->file('image'), $request->marca,$this->pathName);
         }
 
         //atualiza se tiver ID, se não tiver cria um novo

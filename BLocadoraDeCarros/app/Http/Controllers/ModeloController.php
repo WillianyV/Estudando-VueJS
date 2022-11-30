@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreModeloRequest;
 use App\Models\Modelo;
-use App\Models\Util;
+use App\Repositories\ModeloRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ModeloController extends Controller
 {
     // injeção do model
-    public function __construct(Modelo $modelo, Util $util)
+    public function __construct(Modelo $modelo)
     {
         $this->modelo   = $modelo;
-        $this->util     = $util;
         $this->pathName = "modelos";
     }
 
@@ -22,24 +22,43 @@ class ModeloController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $modelos = $this->modelo->all();
+        $modeloRepositorio = new ModeloRepository($this->modelo);
+
+        if($request->has('atributos_marcas')){
+            $atributos_marcas = "marca:id,$request->atributos_marcas";
+            $modeloRepositorio->selectAtributosRegistrosRelacionados($atributos_marcas);
+        }else{
+            $modeloRepositorio->selectAtributosRegistrosRelacionados('marca');
+        }
+
+        if($request->has('pesquisa')){
+            $modeloRepositorio->pesquisa($request->pesquisa);
+        }
+
+        if($request->has('atributos')){
+            $modeloRepositorio->selectAtributos($request->atributos);
+        }
+
+        $modelos = $modeloRepositorio->getResultado();
+
         return response()->json($modelos, 200);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  Illuminate\Http\Request $request
+     * @param  \App\Http\Requests\StoreModeloRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreModeloRequest $request)
     {
         $data = $request->all();
         // Gravar a foto e pegando o caminho onde ela foi salva.
         if ($request->file('imagem')) {
-            $data['imagem'] = $this->util->saveImage($request->file('imagem'), $request->nome,$this->pathName);
+            $$modeloRepositorio = new ModeloRepository($this->modelo);
+            $data['imagem'] = $$modeloRepositorio->saveImage($request->file('imagem'), $request->nome,$this->pathName);
         }
         $modelo = $this->modelo->create($data);
         return response()->json($modelo, 201);
@@ -103,7 +122,8 @@ class ModeloController extends Controller
                 Storage::disk('public')->delete($modelo->imagem); //remove a imagem anterior
             }
             //salva nova imagem
-            $modelo->imagem = $this->util->saveImage($request->file('imagem'), $request->modelo,$this->pathName);
+            $$modeloRepositorio = new ModeloRepository($this->modelo);
+            $modelo->imagem = $$modeloRepositorio->saveImage($request->file('imagem'), $request->modelo,$this->pathName);
         }
 
         //atualiza se tiver ID, se não tiver cria um novo
