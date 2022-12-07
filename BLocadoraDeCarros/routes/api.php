@@ -24,10 +24,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::controller(AuthController::class)->group(function () {
-    Route::post('login', 'login');
-    Route::post('register', 'register');
-});
+Route::post('login', [AuthController::class, 'login'])->name('auth.login');
 
 Route::middleware('jwt.auth')->group(function(){
     Route::apiResource('marcas', MarcaController::class);
@@ -36,8 +33,9 @@ Route::middleware('jwt.auth')->group(function(){
     Route::apiResource('clientes', ClienteController::class);
     Route::apiResource('locacoes', LocacaoController::class);
 
-    Route::post('logout', [AuthController::class, 'logout']);
-    Route::post('refresh', [AuthController::class, 'refresh']);
-    Route::post('me', [AuthController::class, 'me']);
+    Route::post('logout', [AuthController::class, 'logout'])->name('auth.logout');
+    Route::post('refresh', [AuthController::class, 'refresh'])->name('auth.refresh');
+    Route::post('me', [AuthController::class, 'me'])->name('auth.me');
+
 });
 
